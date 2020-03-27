@@ -1,0 +1,277 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+
+	<!-- Imports -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet"> 
+	
+</head>
+<body>
+<style>
+
+* {
+	padding: 0;
+	margin: 0;
+}
+
+:root {
+	--Nav: #1976D2;
+	--Nav-Top: #1565C0;
+	--Text: #FFFFFF;
+}
+
+body {
+	font-family: Arial;
+	background-image:linear-gradient(30deg, blue 0%, #1276af 70%);
+height: 600px;
+}
+
+
+.nav {
+	display: block;
+	text-align: center;
+	width: 100%;
+	height: 5vh;
+	border-top: 2vh solid var(--Nav-Top);
+	background-color: var(--Nav);
+	color: var(--Text);
+	font-weight: bold;
+	padding-top: 1vh;
+	font-family: 'Lato';
+	box-shadow: 0 1px 3px #222;
+	position: fixed;
+	top: 0;
+}
+
+#title,
+#sub {
+	display: block;
+	font-family: 'PT Sans';
+   }
+
+#title {
+	display: block;
+	text-align: center;
+	font-size: 1.2em;
+	margin-top: 10vh;
+}
+
+
+#info {
+	display: block;
+	text-align: center;
+	font-size: 0.8em;
+	margin-top: 3vh;
+}
+
+.select {
+	display: block;
+	margin-top: 3vh;
+	}
+
+.select * {
+margin-left: 25px;
+	display: inline;
+	width: 35vw;
+	text-align: center;
+	text-transform: capitalize;
+	margin-bottom: 3vh;
+	height: 30px;
+	font-size: 16px;
+}
+
+#user,
+#output {
+	width: 340px;;
+	height: 165px;
+	padding: 5px;
+	font-family: 'Ubuntu';
+	overflow-y: scroll;
+	border:1.5px solid #1276af;
+	font-size: 15px;
+}
+
+#from,
+#to {
+	display: inline;
+	text-transform: capitalize;
+	font-weight: bold;
+}
+
+#translate,
+#clear {
+	display: inline;
+	background-color: #ff6f62;
+	border: 2px solid #1276af;
+	padding: 3px;
+	font-size: 0.8em;
+	margin-top: 2vh !important;
+	width: 30vw;
+	height: 6vh;
+	box-shadow: 0 1px 0.1em;
+	outline: none;
+	margin: 0 20px;
+	overflow: hidden;
+	border-radius:30px;
+	color: #fff;
+}
+
+.footer {
+	display: block;
+	position: relative;
+	top: 20px;
+	margin-bottom: 2vh;
+	font-size: 0.8em;
+	text-align: center;
+	font-family: 'Ubuntu';
+	color:orange;
+	
+}
+
+
+#clear:active,
+#translate:active {
+	position: relative;
+	top: 3px;
+	box-shadow: none;
+	
+}
+</style>
+	<div class="container">
+		<div class="nav">
+			الترجمة 
+		</div>
+		<div class="info">
+		
+			
+			<div id="info">
+				Translating from <span id="from">??</span> to <span id="to"></span>.
+			</div>
+		</div>
+		<div class="language" align="center">
+			<div class="select">
+				<select id="lang1"></select>
+				<select id="lang2"></select>
+			</div>
+			<div class="textarea">
+				<textarea id="user"></textarea>
+				<textarea id="output" readonly></textarea>
+			</div>
+		</div>
+		<div class="main" align="center">
+			<button id="translate">Translate</button>
+			<button id="clear">Clear</button>
+		</div>
+		<div class="footer">
+			Create by khalid abou jaafer
+		</div>
+	</div>
+	<script>
+	
+
+$(function() {
+	// اللغات بمكنك اضافة لغات اخرى  ما عليك ان تكتب الحرفين الاولى للغة  كم يوجد هنا👇
+	var lang = [
+		"en",
+		"fr",
+		"de",
+		"zh-cn",
+		"ko",
+		"es",
+		"it",
+		"pt",
+		"ru",
+		"ja",
+		"fa",
+		"hi",
+		"en",
+		"fr",
+		"de",
+		"zh-cn",
+		"ko",
+		"ar",
+		"es",
+		"it",
+		"pt",
+		"ru",
+		"ja",
+		"fa",
+		"hi"
+	];
+	
+
+	var elm = {
+		"lang": $("#lang1, #lang2"),
+		"user": $("#lang1"),
+		"output": $("#lang2"),
+		"userInput": $("#user"),
+		"langOutput": $("#output")
+	}
+	
+
+	for (let i in lang) {
+		elm.lang.append(
+			"<option value='" +
+			lang[i] +
+			"'>" +
+			lang[i] +
+			"</option>"
+		);
+	}
+	
+
+	function translate() {
+	
+		
+		var format = elm
+			.userInput
+			.val()
+			.replace(/ /g , '%20');
+	
+
+		$.getJSON(
+		   "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" + elm.user.val() + "&tl=" + elm.output.val() + "&dt=t&dt=t&q=" + format,
+			function(JSON) {
+				var convert =
+					JSON.toString();
+				var temp =
+					convert.split(",");
+				
+				
+				elm.langOutput.val(temp[0]);
+			}
+		);
+	}
+	
+
+	$("#translate").on("click", function() {
+		translate();
+	});
+	
+	$("#clear").on("click", function() {
+		elm.userInput.val(null);
+		elm.langOutput.val(null);
+	});
+	
+	setInterval(function() {
+		$("#from").text(
+			$("#lang1").val()
+		);
+		
+		$("#to").text(
+			$("#lang2").val()
+		);
+	}, 10);
+});
+	</script>
+</body>
+</html>
